@@ -117,7 +117,7 @@ JNIEXPORT jint JNICALL Java_com_purplefrog_speexjni_SpeexEncoder_getFrameSize
   (JNIEnv *env, jclass cls, jint slot)
 {
     if (throwIfBadSlot(env, slot))
-	return;
+	return -1;
 
     int frame_size;
     struct Slot * gob = slots.slots[slot];
@@ -133,7 +133,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_purplefrog_speexjni_SpeexEncoder_encode
   (JNIEnv *env, jclass cls, jint slot, jshortArray input_frame_)
 {
     if (throwIfBadSlot(env, slot))
-	return;
+	return NULL;
 
     struct Slot * gob = slots.slots[slot];
 
@@ -144,7 +144,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_purplefrog_speexjni_SpeexEncoder_encode
 
     if (nSamples != frame_size) {
 	throwIllegalArgumentException(env, "mismatch between proper frame size and supplied sample array");
-	return;
+	return NULL;
     }
 
     //
@@ -165,7 +165,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_purplefrog_speexjni_SpeexEncoder_encode
     rval = (*env)->NewByteArray(env, nOutput);
     if (rval==0) {
 	throwOutOfMemoryError(env, "failed to allocate speex output frame");
-	return;
+	return NULL;
     }
 
     char* output_frame = (*env)->GetByteArrayElements(env, rval, 0);
